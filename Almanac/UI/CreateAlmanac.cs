@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Almanac.Achievements;
-using Almanac.Bounties;
 using Almanac.Data;
 using Almanac.Utilities;
 using HarmonyLib;
@@ -241,7 +240,7 @@ public static class CreateAlmanac
                 AchievementPanelTooltip.text = "";
                 ToggleButtonOptions();
             });
-        };
+        }
 
         ButtonSfx sfx = CloseButton.gameObject.AddComponent<ButtonSfx>();
         sfx.m_sfxPrefab = CacheAssets.ButtonSFX.m_sfxPrefab;
@@ -337,11 +336,11 @@ public static class CreateAlmanac
             }
             
             SEMan StatusEffectMan = Player.m_localPlayer.GetSEMan();
-            if (StatusEffectMan.HaveStatusEffect(UpdateAlmanac.SelectedAchievement.m_statusEffect.name))
+            if (StatusEffectMan.HaveStatusEffect(UpdateAlmanac.SelectedAchievement.m_statusEffect.NameHash()))
             {
                 if (!StatusEffectMan.RemoveStatusEffect(UpdateAlmanac.SelectedAchievement.m_statusEffect, true)) return;    
                 AlmanacEffectManager.ActiveAchievementEffects.Remove(UpdateAlmanac.SelectedAchievement.m_statusEffect);
-                AlmanacEffectManager.SavedAchievementEffectNames.Remove(UpdateAlmanac.SelectedAchievement.m_statusEffect.name);
+                AlmanacEffectManager.SavedAchievementEffectNames.Remove(UpdateAlmanac.SelectedAchievement.m_statusEffect.NameHash());
                 Player.m_localPlayer.m_customData[AlmanacEffectManager.AchievementKey] = serializer.Serialize(AlmanacEffectManager.SavedAchievementEffectNames);
                 Player.m_localPlayer.Message(MessageHud.MessageType.Center, $"$almanac_removed_effect {UpdateAlmanac.SelectedAchievement.m_statusEffect.m_name}");
                 if (InventoryGui.instance)
@@ -349,7 +348,7 @@ public static class CreateAlmanac
                     UpdateAlmanac.UpdateList(InventoryGui.instance);
                 }
                 return;
-            };
+            }
             int count = StatusEffectMan.GetStatusEffects().FindAll(effect => effect is AlmanacEffectManager.AchievementEffect).Count;
             if (count >= AlmanacPlugin._AchievementThreshold.Value)
             {
@@ -359,7 +358,7 @@ public static class CreateAlmanac
             StatusEffectMan.AddStatusEffect(UpdateAlmanac.SelectedAchievement.m_statusEffect);
             AlmanacEffectManager.ActiveAchievementEffects.Add(UpdateAlmanac.SelectedAchievement.m_statusEffect);
             if (AlmanacEffectManager.SavedAchievementEffectNames.Count > 3) return;
-            AlmanacEffectManager.SavedAchievementEffectNames.Add(UpdateAlmanac.SelectedAchievement.m_statusEffect.name);
+            AlmanacEffectManager.SavedAchievementEffectNames.Add(UpdateAlmanac.SelectedAchievement.m_statusEffect.m_nameHash);
             Player.m_localPlayer.m_customData[AlmanacEffectManager.AchievementKey] = serializer.Serialize(AlmanacEffectManager.SavedAchievementEffectNames);
             if (InventoryGui.instance)
             {
@@ -419,7 +418,7 @@ public static class CreateAlmanac
 
         if (text.GetComponent<TextMeshProUGUI>()) return;
         
-        TextMeshProUGUI component = AddTextMeshProGUI(text.gameObject, true, TextWrappingModes.NoWrap);
+        TextMeshProUGUI component = AddTextMeshProGUI(text.gameObject, true, false);
         component.fontSize = 16;
     }
     private static void EditLeaderboardItem()
@@ -465,7 +464,7 @@ public static class CreateAlmanac
                 key.horizontalAlignment = HorizontalAlignmentOptions.Left;
                 key.color = Color.white;
                 key.text = Localization.instance.Localize(keyText);
-            };
+            }
 
             if (!element.GetChild(1).GetComponent<TextMeshProUGUI>())
             {

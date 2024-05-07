@@ -10,7 +10,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>Almanac</RootNamespace>
         <AssemblyName>Almanac</AssemblyName>
-        <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <LangVersion>10</LangVersion>
         <Nullable>enable</Nullable>
@@ -121,6 +121,9 @@
         </Reference>
         <Reference Include="UnityEngine.UIModule">
           <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Valheim\unstripped_corlib\UnityEngine.UIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="YamlDotNet">
+          <HintPath>..\..\..\..\.nuget\packages\yamldotnet\13.1.0\lib\net45\YamlDotNet.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
@@ -234,8 +237,12 @@
         <Content Include="UpdateManifest.ps1" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.18.2" />
-        <PackageReference Include="YamlDotNet" Version="13.1.0" />
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.32">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.9.5" />
+        <PackageReference Include="YamlDotNet" Version="15.1.2" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

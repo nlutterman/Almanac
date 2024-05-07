@@ -12,7 +12,7 @@ namespace Almanac.Achievements;
 public static class AlmanacEffectManager
 {
     public static readonly List<StatusEffect> ActiveAchievementEffects = new();
-    public static List<string> SavedAchievementEffectNames = new();
+    public static List<int> SavedAchievementEffectNames = new();
     public static readonly string AchievementKey = "AlmanacAchievements";
 
     [HarmonyPatch(typeof(TextsDialog), nameof(TextsDialog.AddActiveEffects))]
@@ -133,7 +133,7 @@ public static class AlmanacEffectManager
                         }
                         else
                         {
-                            appendedTooltip += $"\n{FormattedKey} +<color=orange>{mod.Value}</color>";;
+                            appendedTooltip += $"\n{FormattedKey} +<color=orange>{mod.Value}</color>";
                         }
                         break;
                     default:
@@ -243,7 +243,7 @@ public static class AlmanacEffectManager
         public override void ModifyHealthRegen(ref float regenMultiplier) => regenMultiplier *= data.Modifiers[Modifier.HealthRegen];
         public override void ModifyStaminaRegen(ref float staminaRegen) => staminaRegen *= data.Modifiers[Modifier.StaminaRegen];
         public override void ModifyRaiseSkill(Skills.SkillType skill, ref float value) => value *= data.Modifiers[Modifier.RaiseSkills];
-        public override void ModifySpeed(float baseSpeed, ref float speed) => speed *= data.Modifiers[Modifier.Speed];
+        public override void ModifySpeed(float baseSpeed, ref float speed, Character character, Vector3 dir) => speed *= data.Modifiers[Modifier.Speed];
         public override void ModifyNoise(float baseNoise, ref float noise) => noise *= data.Modifiers[Modifier.Noise];
         public override void ModifyStealth(float baseStealth, ref float stealth) => stealth *= data.Modifiers[Modifier.Stealth];
         public override void ModifyMaxCarryWeight(float baseLimit, ref float limit) => limit += data.Modifiers[Modifier.MaxCarryWeight];

@@ -194,7 +194,8 @@ public static class PieceDataCollector
                             miscNames.Add(hoverName);
                             break;
 
-                        case Piece.PieceCategory.Building:
+                        case Piece.PieceCategory.BuildingStonecutter:
+                        case Piece.PieceCategory.BuildingWorkbench:
                             if (buildNames.Contains(hoverName)) break;
                             buildPieces.Add(piece);
                             buildNames.Add(hoverName);

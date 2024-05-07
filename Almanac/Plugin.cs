@@ -179,7 +179,7 @@ namespace Almanac
         #endregion
 
         #region ConfigOptions
-        private ConfigEntry<T> config<T>(string group, string name, T value, ConfigDescription description,
+        private ConfigEntry<T> config<T>(string group, string configname, T value, ConfigDescription description,
             bool synchronizedSetting = true)
         {
             ConfigDescription extendedDescription =
@@ -187,7 +187,7 @@ namespace Almanac
                     description.Description +
                     (synchronizedSetting ? " [Synced with Server]" : " [Not Synced with Server]"),
                     description.AcceptableValues, description.Tags);
-            ConfigEntry<T> configEntry = Config.Bind(group, name, value, extendedDescription);
+            ConfigEntry<T> configEntry = Config.Bind(group, configname, value, extendedDescription);
             //var configEntry = Config.Bind(group, name, value, description);
 
             SyncedConfigEntry<T> syncedConfigEntry = ConfigSync.AddConfigEntry(configEntry);
@@ -195,10 +195,10 @@ namespace Almanac
 
             return configEntry;
         }
-        private ConfigEntry<T> config<T>(string group, string name, T value, string description,
+        private ConfigEntry<T> config<T>(string group, string configname, T value, string description,
             bool synchronizedSetting = true)
         {
-            return config(group, name, value, new ConfigDescription(description), synchronizedSetting);
+            return config(group, configname, value, new ConfigDescription(description), synchronizedSetting);
         }
         #endregion
     }

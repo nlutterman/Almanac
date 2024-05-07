@@ -86,7 +86,7 @@ public static class Utility
         return result.TrimStart();
     }
     public static string RemoveParentheses(string input) => Regex.Replace(input, @"\([^)]*\)", "");
-    public static TextMeshProUGUI AddTextMeshProGUI(GameObject prefab, bool bold = false, TextWrappingModes wrap = TextWrappingModes.Normal)
+    public static TextMeshProUGUI AddTextMeshProGUI(GameObject prefab, bool bold = false, bool wrap = true)
     {
         TextMeshProUGUI TMP = prefab.AddComponent<TextMeshProUGUI>();
         TMP.font = bold ? CacheAssets.NorseFontBold : CacheAssets.NorseFont;
@@ -96,7 +96,7 @@ public static class Utility
         TMP.fontSizeMin = 12;
         TMP.fontSizeMax = 16;
         TMP.autoSizeTextContainer = false;
-        TMP.textWrappingMode = wrap;
+        TMP.enableWordWrapping = wrap;
         TMP.overflowMode = TextOverflowModes.Overflow;
         TMP.verticalAlignment = VerticalAlignmentOptions.Middle;
         TMP.horizontalAlignment = HorizontalAlignmentOptions.Center;

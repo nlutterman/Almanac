@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Almanac.Achievements;
 using Almanac.Bounties;
 using Almanac.Data;
@@ -73,15 +74,15 @@ public static class Patches
     private static void ApplySavedAchievementEffects(Player player)
     {
         if (!player.m_customData.TryGetValue(AlmanacEffectManager.AchievementKey, out string data)) return;
-        IDeserializer deserializer = new DeserializerBuilder().Build();
-        AlmanacEffectManager.SavedAchievementEffectNames = deserializer.Deserialize<List<string>>(data);
+        var effectNames = new DeserializerBuilder().Build().Deserialize<List<string>>(data);
+        AlmanacEffectManager.SavedAchievementEffectNames = effectNames.Select(name => name.GetStableHashCode()) as List<int> ?? new List<int>();
         if (AlmanacEffectManager.SavedAchievementEffectNames.Count <= 0) return;
         AlmanacPlugin.AlmanacLogger.LogDebug("Client: Applying saved achievement effects");
         SEMan PlayerSEMan = player.GetSEMan();
-        foreach (string name in AlmanacEffectManager.SavedAchievementEffectNames)
+        foreach (int nameHash in AlmanacEffectManager.SavedAchievementEffectNames)
         {
-            if (PlayerSEMan.HaveStatusEffect(name)) continue;
-            AchievementManager.Achievement achievement = AchievementManager.AchievementList.Find(x => x.m_statusEffect?.name == name);
+            if (PlayerSEMan.HaveStatusEffect(nameHash)) continue;
+            AchievementManager.Achievement achievement = AchievementManager.AchievementList.Find(x => x.m_statusEffect?.NameHash() == nameHash);
             if (achievement != null && achievement.m_statusEffect != null)
             {
                 PlayerSEMan.AddStatusEffect(achievement.m_statusEffect);

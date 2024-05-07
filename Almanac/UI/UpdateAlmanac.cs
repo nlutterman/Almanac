@@ -54,6 +54,7 @@ public static class UpdateAlmanac
     [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.UpdateTrophyList))]
     private static class UpdateTrophyListPatch
     {
+        
         private static bool Prefix(InventoryGui __instance)
         {
             if (!__instance) return false;
@@ -422,7 +423,7 @@ public static class UpdateAlmanac
             transform.Find("description").GetComponent<TMP_Text>().text = achievement.m_desc;
             if (achievement.m_statusEffect != null)
             {
-                transform.Find("$part_outline").gameObject.SetActive(Player.m_localPlayer.GetSEMan().HaveStatusEffect(achievement.m_statusEffect.name));
+                transform.Find("$part_outline").gameObject.SetActive(Player.m_localPlayer.GetSEMan().HaveStatusEffect(achievement.m_statusEffect.NameHash()));
             }
 
             Button button = gameObject.AddComponent<Button>();
@@ -614,6 +615,7 @@ public static class UpdateAlmanac
                 
                 GameObject data = Object.Instantiate(CacheAssets.Item, CreateAlmanac.PanelContent);
                 if (!Utils.FindChild(data.transform, "$part_infoType").TryGetComponent(out TextMeshProUGUI TypeComponent)) continue;
+                // ReSharper disable once Unity.PerformanceCriticalCodeInvocation
                 if (!Utils.FindChild(data.transform, "$part_data").GetComponent<TextMeshProUGUI>().TryGetComponent(out TextMeshProUGUI DataComponent)) continue;
                 
                 TypeComponent.text = Localization.instance.Localize(RemoveNumbers(kvp.Key));
@@ -629,7 +631,7 @@ public static class UpdateAlmanac
         if (text.TryGetComponent(out TextMeshProUGUI textMesh))
         {
             textMesh.overflowMode = TextOverflowModes.Overflow;
-            textMesh.textWrappingMode = TextWrappingModes.NoWrap;
+            textMesh.enableWordWrapping = false;
             if (TreasureHunt.TreasureHunt.ActiveTreasureLocation != null)
             {
                 textMesh.text = Localization.instance.Localize(TreasureHunt.TreasureHunt.ActiveTreasureLocation.m_data.m_name == SelectedTreasure.m_name
@@ -1231,7 +1233,7 @@ public static class UpdateAlmanac
                 containerData.Add("$almanac_container_drop_chance", (container.m_defaultItems.m_dropChance * 100).ToString("0.0") + "%");
                 containerData.Add("$almanac_container_one_of_each", container.m_defaultItems.m_oneOfEach.ToString());
                 
-                float totalWeight = container.m_defaultItems.m_drops.Sum(item => item.m_weight);;
+                float totalWeight = container.m_defaultItems.m_drops.Sum(item => item.m_weight);
                 for (int index = 0; index < container.m_defaultItems.m_drops.Count; index++)
                 {
                     DropTable.DropData drop = container.m_defaultItems.m_drops[index];
@@ -1813,7 +1815,7 @@ public static class UpdateAlmanac
                     }
                     
                     MergeDictionaries(DefaultData, fishData);
-                };
+                }
             }
         }
         
@@ -1932,15 +1934,14 @@ public static class UpdateAlmanac
             MergeDictionaries(DefaultData, EquipData);
         }
 
-        if (itemData.m_shared.m_movementModifier != 0f || itemData.m_shared.m_eitrRegenModifier != 0f ||
-            itemData.m_shared.m_baseItemsStaminaModifier != 0)
+        if (itemData.m_shared.m_movementModifier != 0f || itemData.m_shared.m_eitrRegenModifier != 0f || itemData.m_shared.m_homeItemsStaminaModifier != 0)
         {
             Dictionary<string, string> StatModifiers = new()
             {
                 {"$almanac_stat_modifiers_title", "title"},
                 {"$almanac_movement_modifier_label", (itemData.m_shared.m_movementModifier * 100).ToString(CultureInfo.CurrentCulture) + "<color=orange>%</color>"},
                 {"$almanac_eitr_regen_label", (itemData.m_shared.m_eitrRegenModifier * 100).ToString(CultureInfo.CurrentCulture) + "<color=orange>%</color>"},
-                {"$almanac_base_items_stamina_modifier_label", (itemData.m_shared.m_baseItemsStaminaModifier * 100).ToString(CultureInfo.CurrentCulture) + "<color=orange>%</color>"},
+                {"$almanac_base_items_stamina_modifier_label", (itemData.m_shared.m_homeItemsStaminaModifier * 100).ToString(CultureInfo.CurrentCulture) + "<color=orange>%</color>"},
             };
 
             MergeDictionaries(DefaultData, StatModifiers);
@@ -2356,6 +2357,7 @@ public static class UpdateAlmanac
     [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.OnOpenTrophies))]
     private static class UpdateAlmanacAssets
     {
+        
         private static void Postfix(InventoryGui __instance)
         {
             if (!__instance) return;
@@ -2375,6 +2377,7 @@ public static class UpdateAlmanac
     [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.OnCloseTrophies))]
     private static class DestroyAlmanacAssets
     {
+        
         private static void Postfix(InventoryGui __instance)
         {
             if (!__instance) return;
@@ -2382,11 +2385,13 @@ public static class UpdateAlmanac
             HideAlmanac();
         }
     }
+    // ReSharper disable once MemberCanBePrivate.Global
     public static void HideAlmanac()
     {
         CreateAlmanac.AlmanacGUI.SetActive(false);
         CreateAlmanac.AchievementGUI.SetActive(false);
     }
+    // ReSharper disable Unity.PerformanceAnalysis
     public static void UpdateGUI()
     {
         if (!Player.m_localPlayer) return;
@@ -2434,6 +2439,7 @@ public static class UpdateAlmanac
     [HarmonyPatch(typeof(ZInput), nameof(ZInput.GetButtonDown))]
     private static class ZInputPatch
     {
+        
         private static bool Prefix() => !IsTrophyPanelActive();
 
         private static bool IsTrophyPanelActive()
@@ -2447,6 +2453,7 @@ public static class UpdateAlmanac
     [HarmonyPatch(typeof(InventoryGui), nameof(InventoryGui.Hide))]
     private static class AlmanacHidePatch
     {
+        
         private static bool Prefix() => !CreateAlmanac.IsAchievementActive() || !CreateAlmanac.IsPanelActive();
     }
 }
